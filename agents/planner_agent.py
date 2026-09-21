@@ -8,6 +8,11 @@ class PlannerAgent:
         
         
     def format_exercise(self, plan):
+        """Convert one Prolog prescription term into a UI-friendly dictionary."""
+        
+        
+        # PySwip terms are converted to text here because the three output functors
+        # have fixed, controlled formats and are straightforward to parse.
         plan = str(plan)
 
         # Standard repetition-based exercise
@@ -58,11 +63,15 @@ class PlannerAgent:
         return None
     
     def format_week(self, week):
+        """Translate the symbolic Prolog week into the representation shown by the UI."""
         formatted_week = []
         
         for day in week:
             day_text = str(day)
             
+            
+            # A Prolog day has the form day(Number, SessionType, ExercisePlans).
+            # The symbolic session type is kept, but made readable for display.
             day_match = re.match(
                 r"day\((\d+),\s*([^,]+),",
                 day_text
@@ -98,6 +107,7 @@ class PlannerAgent:
     
 
     def process(self, profile):
+        """Request a plan and package both its display and reasoning representations."""
         result = self.prolog.build_plan(profile)
         
         if result is None:
@@ -121,21 +131,3 @@ class PlannerAgent:
         }
         
         
-        
-# PlannerAgent
-#     │
-#     │ sends structured profile
-#     ▼
-# PrologInterface
-#     │
-#     ▼
-# build_explainable_plan(...)
-#     │
-#     ▼
-# symbolic reasoning
-#     │
-#     ▼
-# PlannerAgent receives result
-
-#PlannerAgent is the agent role responsible for requesting 
-#and receiving that symbolic planning result.

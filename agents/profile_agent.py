@@ -32,10 +32,3 @@ class ProfileAgent:
         }
         
         
-#Is the resulting profile ready to send to the planner?
-
-# ProfileAgent
-#     │
-#     ├── complete → PlannerAgent
-#     │
-#     └── incomplete → stop and report missing information

@@ -9,6 +9,7 @@ class ConstraintAgent:
         self.prolog = PrologInterface()
 
     def extract_exercises(self, week):
+        """Extract exercise atoms from the three prescription term formats."""
         exercises = []
 
         for day in week:
@@ -23,6 +24,7 @@ class ConstraintAgent:
         return exercises
 
     def process(self, week, constraints):
+        """Check every selected exercise against every active user constraint."""
         exercises = self.extract_exercises(week)
         violations = []
 
@@ -40,11 +42,3 @@ class ConstraintAgent:
             "violations": violations
         }
         
-        
-# ConstraintAgent
-#      ↓
-# "Does this exercise violate this constraint?"
-#      ↓
-# violates_constraint/2 in Prolog
-#      ↓
-# True / False

@@ -2,8 +2,10 @@ import re
 
 
 class ExplanationAgent:
-
+    """Turn Prolog reasoning terms and constraint effects into fixed explanations"""
+    
     def extract_reasoning(self, reasoning):
+        """Read the planning decisions needed by the explanation templates."""
         reasoning_text = str(reasoning)
 
         result = {
@@ -34,6 +36,7 @@ class ExplanationAgent:
         return result
     
     def extract_constraint_effects(self, constraint_effects):
+        """Convert constraint_effect(Constraint, Exercises) terms into a dictionary"""
         effects = {}
 
         for effect in constraint_effects:
@@ -60,6 +63,7 @@ class ExplanationAgent:
         return effects
     
     def process(self, profile, planner_result, constraint_result):
+        """Compose the final explanation"""
         reasoning = self.extract_reasoning(
             planner_result["reasoning"]
         )
@@ -72,6 +76,8 @@ class ExplanationAgent:
         
         split = reasoning["split"]
         exercise_count = reasoning["exercise_count"]
+        # Defaults are carried from the NLP stage so the system can distinguish
+        # user-provided values from assumptions made automatically by the extractor.
         defaults_used = profile.get("defaults_used", [])
 
         
@@ -187,6 +193,8 @@ class ExplanationAgent:
 
             # ConstraintAgent validates the complete generated plan
             # against all user constraints.
+            # The sentence below reports the independent ConstraintAgent result.
+            # It is added once after all individual constraint explanations.
             explanations.append(
                 "The final workout was validated against all specified "
                 "constraints, and none of the selected exercises violates them."

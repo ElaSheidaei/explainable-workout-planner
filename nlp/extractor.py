@@ -1,3 +1,5 @@
+"""Rule-based extraction of the controlled user profile used by the planner."""
+
 import re
 
 
@@ -90,19 +92,25 @@ def extract_sessions_per_week(text):
         "four": "4",
     }
 
+    # Convert written numbers (e.g. "two", "three", "four") into digits
+    # so that the same regex patterns can handle both numeric and word inputs
     for word, digit in number_words.items():
         text = re.sub(rf"\b{word}\b", digit, text)
 
+
+    # Possible ways the user may express weekly training frequency.
     patterns = [
         r"(\d)\s*times?\s*(?:a|per)\s*week",
         r"(\d)\s*sessions?\s*(?:a|per)\s*week",
         r"train\s*(\d)\s*times?\s*(?:a|per)\s*week",
     ]
 
+    # Check each pattern until a valid number of weekly sessions is found.
     for pattern in patterns:
         match = re.search(pattern, text)
 
         if match:
+            # The first captured group contains the number of sessions.
             sessions = int(match.group(1))
 
             if sessions in [2, 3, 4]:
@@ -258,6 +266,7 @@ def extract_constraints(text):
 
 
 def extract_profile(text):
+    """Extract all supported attributes and record any defaults introduced."""
     goal = extract_goal(text)
     level = extract_level(text)
     sessions = extract_sessions_per_week(text)
